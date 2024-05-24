@@ -43,19 +43,21 @@ Esta opción servirá para eliminar el registro de un paciente.
 
 Terminar la ejecución del programa
 
-### Para ejecutar en Unix/Linux
-
-### Para ejecutar en Windows
-
-<details>
-    <summary>Copiar estos comandos en terminal</summary>
+### Para compilar y ejecutar en UNIX/Linux
 
 ```bash
 git clone https://github.com/Angus17/PIA_LABORATORIO.git
 cd PIA_LABORATORIO
-gcc PIA.c -o PIA -lregex
+gcc PIA.c -o PIA
+./PIA
+```
+
+### Para compilar y ejecutar en Windows
+
+```powershell
+git clone https://github.com/Angus17/PIA_LABORATORIO.git
+cd PIA_LABORATORIO
+gcc PIA.c -o PIA.exe -lregex
 ./PIA.exe
 
 ```
-</details>
-
