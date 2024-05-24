@@ -47,6 +47,15 @@ Terminar la ejecución del programa
 
 ### Para ejecutar en Windows
 
-**_En la terminal_**
+<details>
+    <summary>Copiar estos comandos en terminal</summary>
 
-```git clone https://github.com/Angus17/PIA_LABORATORIO.git```
+```bash
+git clone https://github.com/Angus17/PIA_LABORATORIO.git
+cd PIA_LABORATORIO
+gcc PIA.c -o PIA -lregex
+./PIA.exe
+
+```
+</details>
+
