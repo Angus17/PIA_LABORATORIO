@@ -43,21 +43,28 @@ Esta opción servirá para eliminar el registro de un paciente.
 
 Terminar la ejecución del programa
 
+
+**_NOTA: Antes de seguir a la compilacion y ejecucion, asegurarse de tener instalado GIT_**
+
+En caso de no tener GIT, abra cualquiera de las dos pestañas segun su sistema, por el contrario, hacer caso omiso:
+
+[Instalar GIT en Windows](https://git-scm.com/download/win)
+[Instalar GIT en Linux](https://git-scm.com/download/linux)
+
 ### Para compilar y ejecutar en UNIX/Linux
 
 ```bash
 git clone https://github.com/Angus17/PIA_LABORATORIO.git
 cd PIA_LABORATORIO
-gcc PIA.c -o PIA
-./PIA
+gcc PIA.c -o PIA # Compila y crea el ejecutable
+./PIA #Iniciar el ejecutable del programa
 ```
-
 ### Para compilar y ejecutar en Windows
 
 ```powershell
 git clone https://github.com/Angus17/PIA_LABORATORIO.git
 cd PIA_LABORATORIO
-gcc PIA.c -o PIA.exe -lregex
-./PIA.exe
+gcc PIA.c -o PIA.exe -lregex # Compila y crea el ejecutable
+./PIA.exe #Iniciar el ejecutable del programa
 
 ```
