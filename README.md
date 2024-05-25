@@ -49,6 +49,7 @@ Terminar la ejecución del programa
 En caso de no tener GIT, abra cualquiera de las dos pestañas segun su sistema, por el contrario, hacer caso omiso:
 
 [Instalar GIT en Windows](https://git-scm.com/download/win)
+
 [Instalar GIT en Linux](https://git-scm.com/download/linux)
 
 ### Para compilar y ejecutar en UNIX/Linux
