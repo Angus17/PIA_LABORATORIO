@@ -106,6 +106,9 @@ int main(void)
                 free( ruta_archivo_pacientes );
                 free( ruta_archivo_temporal );
 
+                fflush( pacientes );
+                fclose( pacientes );
+
                 break;
         }
 
