@@ -50,7 +50,7 @@ En caso de no tener GIT y/o GCC, abra cualquiera de las dos pestañas segun su s
 
 [Instalar GIT en Windows](https://git-scm.com/download/win)
 
-[Instalar compilador GCC en Windows](https://www.msys2.org/#installation)
+[Instalar compilador GCC en Windows](https://code.visualstudio.com/docs/languages/cpp)
 
 [Instalar GIT en Linux](https://git-scm.com/download/linux)
 
