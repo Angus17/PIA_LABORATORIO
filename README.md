@@ -44,13 +44,17 @@ Esta opción servirá para eliminar el registro de un paciente.
 Terminar la ejecución del programa
 
 
-**_NOTA: Antes de seguir a la compilacion y ejecucion, asegurarse de tener instalado GIT_**
+**_NOTA: Antes de seguir a la compilacion y ejecucion, asegurarse de tener instalado GIT y el compilador GCC_**
 
-En caso de no tener GIT, abra cualquiera de las dos pestañas segun su sistema, por el contrario, hacer caso omiso:
+En caso de no tener GIT y/o GCC, abra cualquiera de las dos pestañas segun su sistema, por el contrario, hacer caso omiso:
 
 [Instalar GIT en Windows](https://git-scm.com/download/win)
 
+[Instalar compilador GCC en Windows](https://www.msys2.org/#installation)
+
 [Instalar GIT en Linux](https://git-scm.com/download/linux)
+
+[Instalar GCC en Linux](https://redessy.com/como-instalar-y-usar-el-compilador-gcc-en-un-sistema-linux/)
 
 ### Para compilar y ejecutar en UNIX/Linux
 
