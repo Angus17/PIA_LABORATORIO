@@ -54,7 +54,7 @@ En caso de no tener GIT y/o GCC, abra cualquiera de las dos pestañas segun su s
 
 [Instalar GIT en Linux](https://git-scm.com/download/linux)
 
-[Instalar GCC en Linux](https://redessy.com/como-instalar-y-usar-el-compilador-gcc-en-un-sistema-linux/)
+[Instalar compilador GCC en Linux](https://redessy.com/como-instalar-y-usar-el-compilador-gcc-en-un-sistema-linux/)
 
 ### Para compilar y ejecutar en UNIX/Linux
 
