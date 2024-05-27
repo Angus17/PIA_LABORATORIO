@@ -46,7 +46,7 @@ Terminar la ejecución del programa
 
 **_NOTA: Antes de seguir a la compilacion y ejecucion, asegurarse de tener instalado GIT y el compilador GCC_**
 
-En caso de no tener GIT y/o GCC, abra cualquiera de las dos pestañas segun su sistema, por el contrario, hacer caso omiso:
+En caso de no tener GIT y/o GCC, abra cualquiera de las cuatro pestañas segun su sistema, por el contrario, hacer caso omiso:
 
 [Instalar GIT en Windows](https://git-scm.com/download/win)
 
