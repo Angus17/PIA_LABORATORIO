@@ -19,3 +19,5 @@
 #endif
 
 #define MAX_BYTES 1000
+#define MAX_PACIENTES 200
+#define MAX_CONSULTORIOS 20
