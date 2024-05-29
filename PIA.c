@@ -16,6 +16,8 @@ struct Datos_Pacientes
 void obtener_path(char **, char **);
 void alta_pacientes(FILE *, struct Datos_Pacientes *, int *);
 void buscar_editar_paciente(FILE *, FILE *, const char *, const char *);
+void realizar_edicion(FILE *, struct Datos_Pacientes *, const char *, const char *);
+
 
 void contar_pacientes(FILE *, struct Datos_Pacientes *, int *);
 bool buscar_numero_nombre(FILE *, struct Datos_Pacientes *, const int *, const char *, const int *);
@@ -102,14 +104,13 @@ int main(void)
             case 2:
 
                 if ( total_pacientes > 0 )
-                {
-                    puts("NO HAY PACIENTES REGISTRADOS EN EL SISTEMA!. . .");
-                }
+
+                    buscar_editar_paciente( pacientes, temporal, ruta_archivo_pacientes, ruta_archivo_temporal );
+
                 else
-                {
-                    
-                }
-                
+
+                    puts("NO HAY PACIENTES REGISTRADOS EN EL SISTEMA!. . .");
+
                 break;
 
             case 3:
@@ -146,7 +147,7 @@ void obtener_path( char **dir_pacientes, char **dir_temporal )
 
     if (*dir_pacientes == NULL)
     {
-        perror("NO HAY SUFICIENTE MEMORIA. . .");
+        fprintf(stderr, "NO HAY SUFICIENTE MEMORIA. . .\n");
 
         exit(EXIT_FAILURE);
     }
@@ -225,7 +226,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
         fflush( file_pacientes );
     }
 
-    while ( strcmp( respuesta, "si" ) == 0 )
+    while ( strcmp( respuesta, "si" ) == 0 && (*pacientes_neto) < MAX_PACIENTES )
     {
         do
         {
@@ -233,7 +234,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             printf("A qué tipo de servicio se da de alta?\n - Externo\n - Emergencia\n: ");
             limpiar_buffer_STDIN();
-            fgets( data->tipo_servicio, sizeof( data->tipo_servicio ) - 1, stdin );
+            fgets( data->tipo_servicio, sizeof( data->tipo_servicio ), stdin );
 
             *( data->tipo_servicio + ( strcspn( data->tipo_servicio, "\n" ) ) ) = '\0';
 
@@ -253,7 +254,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             printf("Nombre del paciente: ");
             limpiar_buffer_STDIN();
-            fgets( data->nombre, sizeof( data->nombre ) - 1, stdin );
+            fgets( data->nombre, sizeof( data->nombre ), stdin );
 
             *( data->nombre + ( strcspn( data->nombre, "\n" ) ) ) = '\0';
 
@@ -271,7 +272,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             printf("Dirección del paciente\n"
                     "NOTA!: Cambia los campos entre () ignorando todos los parentesis\n"
-                    "(Calle) #(numero) (Colonia,Fracc...etc.), (Municipio), (Estado)\n: ");
+                    "(Calle) #(numero) (Colonia, Fracc...etc.), (Municipio), (Estado)\n: ");
             limpiar_buffer_STDIN();
             fgets( data->direccion, sizeof( data->direccion ) - 1, stdin );
 
@@ -302,11 +303,11 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             else if ( data->edad == 0 )
 
-                    data->es_bebe = 1;
+                    data->es_bebe = 1; // true
 
                 else
 
-                    data->es_bebe = 0;
+                    data->es_bebe = 0; // false
 
         } while ( data->edad < 0 );
 
@@ -366,7 +367,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             printf("Síntomas del paciente: ");
             limpiar_buffer_STDIN();
-            fgets( data->sintomas, sizeof( data->sintomas ) - 1, stdin );
+            fgets( data->sintomas, sizeof( data->sintomas ), stdin );
 
             *( data->sintomas + ( strcspn( data->sintomas, "\n" ) ) ) = '\0';
 
@@ -554,15 +555,39 @@ void buscar_editar_paciente(FILE *file_principal, FILE *file_temporal, const cha
 
                             printf("Desea editar datos de algun paciente? Si/No\n: ");
                             limpiar_buffer_STDIN();
-                            fgets( respuesta, sizeof(respuesta), stdin );
+                            fgets( respuesta_2, sizeof(respuesta_2), stdin );
 
                             convertir_cadena_a_minuscula( respuesta );
 
-                            if ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) )
+                            if ( strlen( respuesta_2 ) == 0 || ( strcmp( respuesta_2, "si" ) != 0 && strcmp( respuesta_2, "no" ) != 0) )
 
                                 validar_errores_por_SO();
 
-                        } while ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) );
+                        } while ( strlen( respuesta_2 ) == 0 || ( strcmp( respuesta_2, "si" ) != 0 && strcmp( respuesta_2, "no" ) != 0) );
+
+                        if ( strcmp( respuesta_2, "si" ) == 0 )
+                        {
+                            do
+                            {
+                                limpiar_terminal();
+
+                                puts("Selecciona el campo a editar");
+                                puts("1) Nombre");
+                                puts("2) Direccion");
+                                puts("3) Sintomas");
+                                puts("4) Edad");
+                                puts("5) Genero");
+                                puts("6) # Consultorio");
+                                puts("7) Tipo de servicio");
+                                printf(": ");
+
+                                limpiar_buffer_STDIN();
+
+                                scanf();
+                            } while ();
+                            
+                        }
+                        
 
                     }
                     else
@@ -623,7 +648,7 @@ bool buscar_numero_nombre(FILE *f_pacientes, struct Datos_Pacientes *data, const
 
     rewind( f_pacientes );
 
-    if ( *buscar == 1 )
+    if ( *buscar == 1 ) // Funcion alta_pacientes
     {
         struct Datos_Pacientes temp;
 
@@ -635,7 +660,7 @@ bool buscar_numero_nombre(FILE *f_pacientes, struct Datos_Pacientes *data, const
 
         }
     }
-    else if ( *buscar == 2 )
+    else if ( *buscar == 2 ) // Funcion editar_buscar (id)
         {
             while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
             {
@@ -645,7 +670,7 @@ bool buscar_numero_nombre(FILE *f_pacientes, struct Datos_Pacientes *data, const
 
             }
         }
-        else
+        else // Funcion editar_buscar (nombre)
         {
             while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
             {

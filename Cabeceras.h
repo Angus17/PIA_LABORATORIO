@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#if defined(__linux__) || defined(unix)
+#if defined(__linux__) || defined(unix) && !defined(__ANDROID__)
 
     #include <stdio_ext.h>
     #include <unistd.h>
