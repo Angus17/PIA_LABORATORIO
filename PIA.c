@@ -10,14 +10,15 @@ struct Datos_Pacientes
     char sintomas[50];
     int numero_consultorio;
     int numero_registro;
+    int es_bebe;
 };
 
 void obtener_path(char **, char **);
 void alta_pacientes(FILE *, struct Datos_Pacientes *, int *);
-void buscar_editar_paciente();
+void buscar_editar_paciente(FILE *, FILE *, const char *, const char *);
+
 void contar_pacientes(FILE *, struct Datos_Pacientes *, int *);
-bool buscar_consultorio(FILE *, const int *);
-bool buscar_numero(FILE *, int *);
+bool buscar_numero_nombre(FILE *, struct Datos_Pacientes *, const int *, const char *, const int *);
 
 void convertir_cadena_a_minuscula(char *);
 
@@ -34,15 +35,8 @@ int main(void)
     int opcion, total_pacientes;
     struct Datos_Pacientes datos;
 
-    #if defined(_WIN32) || defined(_WIN64)
 
-        setlocale(LC_ALL, "es_MX");
-
-    #elif defined(__linux__) || defined(unix) && !defined(__ANDROID__)
-
-        setlocale(LC_ALL, "es_MX.UTF-8");
-
-    #endif
+    setlocale(LC_ALL, "es_MX.UTF-8");
 
     obtener_path(&ruta_archivo_pacientes, &ruta_archivo_temporal);
 
@@ -53,7 +47,7 @@ int main(void)
         free(ruta_archivo_pacientes);
         free(ruta_archivo_temporal);
 
-        fprintf(stderr, "ERROR DE ARCHIVOS, INTENTE MAS TARDE. . .");
+        fprintf(stderr, "ERROR DE ARCHIVOS, INTENTE MAS TARDE. . .\n");
 
         return EXIT_FAILURE;
     }
@@ -89,7 +83,7 @@ int main(void)
 
         if (opcion != 5)
 
-            contar_pacientes( pacientes, &datos, &total_pacientes );        
+            contar_pacientes( pacientes, &datos, &total_pacientes );
 
         switch ( opcion )
         {
@@ -106,6 +100,16 @@ int main(void)
                 break;
 
             case 2:
+
+                if ( total_pacientes > 0 )
+                {
+                    puts("NO HAY PACIENTES REGISTRADOS EN EL SISTEMA!. . .");
+                }
+                else
+                {
+                    
+                }
+                
                 break;
 
             case 3:
@@ -191,8 +195,8 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
     char expresion_3[] = "^([0-9A-Za-z ]+) #([0-9]+) ([A-Za-z ]+)\\, ([A-Za-z ]+)\\, ([A-Za-z ]+)$";
     char expresion_4[] = "^[A-Za-z, ]+$";
     regex_t re_servicio, re_cadenas, re_direccion, re_sintomas;
-    bool es_bebe, numero_disponible = true;
-    int regular_1, dias;
+    bool numero_disponible = true;
+    int regular_1, dias, busqueda_id = 1;
 
     regcomp( &re_servicio, expresion, REG_EXTENDED );
     regcomp( &re_cadenas, expresion_2, REG_EXTENDED );
@@ -281,8 +285,6 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
         } while ( regular_1 != 0 );
 
-        strcat( data->direccion, "." ); // Delimitador
-
         do
         {
             do
@@ -300,15 +302,15 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             else if ( data->edad == 0 )
 
-                    es_bebe = true;
+                    data->es_bebe = 1;
 
                 else
 
-                    es_bebe = false;
+                    data->es_bebe = 0;
 
         } while ( data->edad < 0 );
 
-        if ( es_bebe )
+        if ( data->es_bebe )
         {
             do
             {
@@ -327,7 +329,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
                 else if ( dias > 365 )
                     {
-                        es_bebe = false;
+                        data->es_bebe = 0;
 
                         limpiar_terminal();
                         puts("El/la paciente ya supera el año de nacid@, ya no se considera bebé. . .");
@@ -402,7 +404,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
             if ( *pacientes_neto > 0 )
 
-                numero_disponible = buscar_numero(file_pacientes, &data->numero_registro);
+                numero_disponible = buscar_numero_nombre(file_pacientes, NULL, &data->numero_registro, NULL, &busqueda_id);
 
         } while (!numero_disponible);
 
@@ -410,7 +412,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
         *(data->tipo_servicio) = toupper( *(data->tipo_servicio) );
 
-        fprintf(file_pacientes, "%s %d %s %d %c %s %d %s", data->tipo_servicio, data->numero_registro, data->nombre, data->edad, data->genero, data->sintomas, data->numero_consultorio, data->direccion);
+        fprintf(file_pacientes, "%s %d %s %d %c %s %d %s %d", data->tipo_servicio, data->numero_registro, data->nombre, data->edad, data->genero, data->sintomas, data->numero_consultorio, data->direccion, data->es_bebe);
 
         fflush( file_pacientes );
 
@@ -431,6 +433,13 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
                     validar_errores_por_SO();
 
             } while ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) );
+
+            if (strcmp( respuesta, "si" ) == 0)
+            {
+                fprintf( file_pacientes, "\n" );
+
+                fflush( file_pacientes );
+            }
         }
         else
         {
@@ -453,46 +462,199 @@ void contar_pacientes(FILE *file_pacientes, struct Datos_Pacientes *data, int *p
 
     *pacientes = 0;
 
-    while (fscanf(file_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^.]", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion) != EOF)
+    while (fscanf(file_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF)
 
         (*pacientes)++;
 
-    if (*pacientes > 0)
-
-        (*pacientes)--;
-
 }
 
-bool buscar_consultorio(FILE *f_pacientes, const int *numero_consultorio)
+void buscar_editar_paciente(FILE *file_principal, FILE *file_temporal, const char *dir_principal, const char *dir_temporal)
 {
-    struct Datos_Pacientes data;
+    char respuesta[3], respuesta_2[3], respuesta_busqueda, nombre[100];
+    int numero_registro, buscar_id = 2, buscar_nombre = 3;
+    struct Datos_Pacientes datos;
+
+    do
+    {
+        limpiar_terminal();
+
+        printf("Desea buscar datos de algun paciente? Si/No\n: ");
+        limpiar_buffer_STDIN();
+        fgets( respuesta, sizeof(respuesta), stdin );
+
+        convertir_cadena_a_minuscula( respuesta );
+
+        if ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) )
+
+            validar_errores_por_SO();
+
+    } while ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) );
+
+    if (strcmp( respuesta, "si" ) == 0)
+    {
+        file_temporal = fopen( dir_temporal, "a+" );
+
+        if (file_temporal == NULL)
+
+            fprintf(stderr, "ERROR DE FICHEROS! INTENTE MAS TARDE. . .\n");
+
+        else
+        {
+            do
+            {
+                limpiar_terminal();
+
+                printf("Desea buscar por\n a) Numero de registro\n b) Nombre\n?: ");
+                limpiar_buffer_STDIN();
+                scanf(" %c", &respuesta_busqueda);
+
+                respuesta_busqueda = tolower(respuesta_busqueda);
+
+                if ( respuesta_busqueda != 'a' && respuesta_busqueda != 'b' )
+
+                    validar_errores_por_SO();
+
+            } while (respuesta_busqueda != 'a' && respuesta_busqueda != 'b');
+
+            switch (respuesta_busqueda)
+            {
+                case 'a':
+
+                    do
+                    {
+                        do
+                        {
+                            limpiar_terminal();
+
+                            printf("Ingresa el número de registro del paciente: ");
+                            limpiar_buffer_STDIN();
+                        } while ( scanf("%d", &numero_registro) != 1 );
+
+                        if (numero_registro < 1)
+
+                            validar_errores_por_SO();
+
+                    } while (numero_registro < 1);
+
+                    if ( buscar_numero_nombre( file_principal, &datos, &numero_registro, NULL, &buscar_id ) )
+                    {
+                        printf("%-20s%-20s%-20s%-20s%-20s%-20s%-20s%20s\n\n", "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+
+                        if ( datos.es_bebe )
+
+                            printf("%-20d%-20s%-20c%-20s%20d meses %-20s%-20s%20d\n\n", datos.numero_registro, datos.tipo_servicio, datos.genero, datos.nombre, datos.edad, datos.sintomas, datos.direccion, datos.numero_consultorio);
+
+                        else
+
+                            printf("%-20d%-20s%-20c%-20s%20d años %-20s%-20s%20d\n\n", datos.numero_registro, datos.tipo_servicio, datos.genero, datos.nombre, datos.edad, datos.sintomas, datos.direccion, datos.numero_consultorio);
+
+                        do
+                        {
+                            limpiar_terminal();
+
+                            printf("Desea editar datos de algun paciente? Si/No\n: ");
+                            limpiar_buffer_STDIN();
+                            fgets( respuesta, sizeof(respuesta), stdin );
+
+                            convertir_cadena_a_minuscula( respuesta );
+
+                            if ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) )
+
+                                validar_errores_por_SO();
+
+                        } while ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) );
+
+                    }
+                    else
+                    {
+                        limpiar_terminal();
+
+                        puts("No se encontró al paciente en nuestro sistema. . .");
+                    }
+
+                break;
+
+                case 'b':
+
+                    do
+                    {
+                        limpiar_terminal();
+
+                        printf("Ingresa el nombre del paciente: ");
+                        limpiar_buffer_STDIN();
+                        fgets(nombre, sizeof(nombre), stdin);
+
+                        *( nombre + ( strcspn( nombre, "\n" ) ) ) = '\0';
+
+                    } while (numero_registro < 1);
+
+                    if ( buscar_numero_nombre( file_principal, &datos, NULL, nombre, &buscar_nombre ) )
+                    {
+                        printf("%-20s%-20s%-20s%-20s%-20s%-20s%-20s%20s\n\n", "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+
+                        printf("%-20s%-20s%-20s%-20s%-20s%-20s%-20s%20s\n\n", "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+
+                        if ( datos.es_bebe )
+
+                            printf("%-20d%-20s%-20c%-20s%20d meses %-20s%-20s%20d\n\n", datos.numero_registro, datos.tipo_servicio, datos.genero, datos.nombre, datos.edad, datos.sintomas, datos.direccion, datos.numero_consultorio);
+
+                        else
+
+                            printf("%-20d%-20s%-20c%-20s%20d años %-20s%-20s%20d\n\n", datos.numero_registro, datos.tipo_servicio, datos.genero, datos.nombre, datos.edad, datos.sintomas, datos.direccion, datos.numero_consultorio);
+
+
+                    }
+                    else
+                    {
+                        limpiar_terminal();
+
+                        puts("No se encontró al paciente en nuestro sistema. . .");
+                    }
+
+                break;
+            }
+        }
+
+    }
+}
+
+bool buscar_numero_nombre(FILE *f_pacientes, struct Datos_Pacientes *data, const int *numero_ingresado, const char *nombre_ingresado, const int *buscar)
+{
 
     rewind( f_pacientes );
 
-    while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d  %200[^.] ", data.tipo_servicio, &data.numero_registro, data.nombre, &data.edad, &data.genero, data.sintomas, &data.numero_consultorio, data.direccion) != EOF )
+    if ( *buscar == 1 )
     {
-        if (data.numero_consultorio == (*numero_consultorio))
+        struct Datos_Pacientes temp;
 
-            return false; // Consultorio ocupado
+        while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", temp.tipo_servicio, &temp.numero_registro, temp.nombre, &temp.edad, &temp.genero, temp.sintomas, &temp.numero_consultorio, temp.direccion, &temp.es_bebe) != EOF )
+        {
+            if ( temp.numero_registro == (*numero_ingresado) )
 
+                return false; // Numero de registro ocupado
+
+        }
     }
+    else if ( *buscar == 2 )
+        {
+            while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
+            {
+                if ( data->numero_registro == (*numero_ingresado) )
 
-    return true;
-}
+                    return false; // Numero de registro encontrado
 
-bool buscar_numero(FILE *f_pacientes, int *numero_ingresado)
-{
-    struct Datos_Pacientes data;
+            }
+        }
+        else
+        {
+            while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
+            {
+                if ( data->nombre == nombre_ingresado )
 
-    rewind( f_pacientes );
+                    return false; // Nombre registrado
 
-    while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^.]", data.tipo_servicio, &data.numero_registro, data.nombre, &data.edad, &data.genero, data.sintomas, &data.numero_consultorio, data.direccion) != EOF )
-    {
-        if (data.numero_registro == (*numero_ingresado))
-
-            return false; // Numero de registro ocupado
-
-    }
+            }
+        }
 
     return true;
 }
