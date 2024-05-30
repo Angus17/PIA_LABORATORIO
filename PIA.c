@@ -52,18 +52,6 @@ int main(void)
 
     obtener_path(&todo.ruta_archivo_pacientes, &todo.ruta_archivo_temporal);
 
-    todo.pacientes = fopen(todo.ruta_archivo_pacientes, "a+");
-
-    if ( todo.pacientes == NULL)
-    {
-        free(todo.ruta_archivo_pacientes);
-        free(todo.ruta_archivo_temporal);
-
-        fprintf(stderr, "ERROR DE ARCHIVOS, INTENTE MAS TARDE. . .\n");
-
-        return EXIT_FAILURE;
-    }
-
     do
     {
         do
