@@ -488,6 +488,8 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
         regfree( &re_servicio );
         regfree( &re_sintomas );
         regfree( &re_direccion );
+
+        fclose( file_pacientes );
     }
 }
 
