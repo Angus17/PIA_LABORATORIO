@@ -150,7 +150,9 @@ int main(void)
 
     } while (opcion != 5);
 
+    limpiar_terminal();
 
+    puts(" PROGRAMA FINALIZADO EXITOSAMENTE! ");
     return EXIT_SUCCESS;
 }
 
