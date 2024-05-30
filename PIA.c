@@ -26,7 +26,7 @@ void alta_pacientes(FILE *, struct Datos_Pacientes *, int *, const char *);
 void buscar_editar_paciente(struct Conjunto_Datos *);
 void realizar_edicion(struct Conjunto_Datos *, const int *, const int *, const int *, const char *);
 void listar_pacientes(FILE *, struct Datos_Pacientes *, const char *);
-void baja_pacientes(FILE *, struct Datos_Pacientes *, int *, const char *);
+void baja_pacientes(struct Conjunto_Datos *);
 
 
 void contar_pacientes(FILE *, struct Datos_Pacientes *, int *, const char *);
@@ -124,9 +124,28 @@ int main(void)
                 break;
 
             case 3:
+
+                if ( todo.total_pacientes > 0 )
+
+                    listar_pacientes( todo.pacientes, &todo.datos, todo.ruta_archivo_pacientes );
+
+                else
+
+                    puts("NO HAY PACIENTES REGISTRADOS EN EL SISTEMA!. . .");
+
                 break;
 
             case 4:
+
+                if ( todo.total_pacientes > 0 )
+
+                    baja_pacientes( &todo );
+
+                else
+
+                    puts("NO HAY PACIENTES REGISTRADOS EN EL SISTEMA!. . .");
+
+
                 break;
 
             case 5:
@@ -562,15 +581,21 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                     if ( !buscar_numero_nombre( a_data->pacientes, &a_data->datos, &numero_registro, NULL, &buscar_id ) )
                     {
-                        printf("%-20s%-20s%-20s%-20s%-20s%-20s%-20s%20s\n\n", "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+                        printf("%-15s%-20s%-10s%-25s%-10s%-30s%-50s%-15s\n",
+                            "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
 
-                        if ( a_data->datos.es_bebe )
-
-                            printf("%-20d%-20s%-20c%-20s%20d meses %-20s%-20s%20d\n\n", a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre, a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
-
+                        if (a_data->datos.es_bebe)
+                        {
+                            printf("%-15d%-20s%-10c%-25s%-10d meses%-30s%-50s%-15d\n",
+                                a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre,
+                                a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
+                        }
                         else
-
-                            printf("%-20d%-20s%-20c%-20s%20d años %-20s%-20s%20d\n\n", a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre, a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
+                        {
+                            printf("%-15d%-20s%-10c%-25s%-10d años %-30s%-50s%-15d\n",
+                                a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre,
+                                a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
+                        }
 
                         pausar_terminal();
 
@@ -665,16 +690,21 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                     if ( !buscar_numero_nombre( a_data->pacientes, &a_data->datos, NULL, nombre, &buscar_nombre ) )
                     {
-                        printf("%-20s%-20s%-20s%-20s%-20s%-20s%-20s%20s\n\n", "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+                        printf("%-15s%-20s%-10s%-25s%-10s%-30s%-50s%-15s\n",
+                            "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
 
-                        if ( a_data->datos.es_bebe )
-
-                            printf("%-20d%-20s%-20c%-20s%20d meses %-20s%-20s%20d\n\n", a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre, a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
-
+                        if (a_data->datos.es_bebe)
+                        {
+                            printf("%-15d%-20s%-10c%-25s%-10d meses%-30s%-50s%-15d\n",
+                                a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre,
+                                a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
+                        }
                         else
-
-                            printf("%-20d%-20s%-20c%-20s%20d años %-20s%-20s%20d\n\n", a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre, a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
-
+                        {
+                            printf("%-15d%-20s%-10c%-25s%-10d años %-30s%-50s%-15d\n",
+                                a_data->datos.numero_registro, a_data->datos.tipo_servicio, a_data->datos.genero, a_data->datos.nombre,
+                                a_data->datos.edad, a_data->datos.sintomas, a_data->datos.direccion, a_data->datos.numero_consultorio);
+                        }
                         pausar_terminal();
 
                         do
@@ -768,7 +798,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
     regex_t re_servicio, re_cadenas, re_direccion, re_sintomas;
     int regular_1, auxiliar_edad, auxiliar_es_bebe, auxiliar_consultorio, auxiliar_dias;
 
-    all->temporal = fopen( all->ruta_archivo_temporal, "a+" );
+    all->temporal = fopen( all->ruta_archivo_temporal, "w" );
 
     if ( all->temporal == NULL )
 
@@ -1375,6 +1405,134 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
     }
 }
 
+void listar_pacientes(FILE *file_pacientes, struct Datos_Pacientes *data, const char *dir_pacientes)
+{
+    file_pacientes = fopen( dir_pacientes, "r" );
+
+    if ( file_pacientes == NULL )
+
+        fprintf(stderr, "ERROR DE FICHEROS, NO SE LEYERON CORRECTAMENTE. . .\n");
+
+    else
+    {
+        rewind( file_pacientes );
+
+        printf("%-15s%-20s%-10s%-25s%-10s%-30s%-50s%-15s\n\n",
+                "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+
+        while ( fscanf(file_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
+        {
+            if (data->es_bebe)
+            {
+                printf("%-15d%-10s%-10c%-10s%-5d meses%-15s%-30s%-5d\n",
+                    data->numero_registro, data->tipo_servicio, data->genero, data->nombre,
+                    data->edad, data->sintomas, data->direccion, data->numero_consultorio);
+            }
+            else
+            {
+                printf("%-15d%-10s%-10c%-10s%-5d años %-15s%-30s%-5d\n",
+                    data->numero_registro, data->tipo_servicio, data->genero, data->nombre,
+                    data->edad, data->sintomas, data->direccion, data->numero_consultorio);
+            }
+        }
+
+        fclose( file_pacientes );
+    }
+}
+
+void baja_pacientes(struct Conjunto_Datos *a_data)
+{
+    int numero_registro, buscar = 2;
+    char respuesta[3];
+
+    do
+    {
+        limpiar_terminal();
+
+        printf("Desea dar de baja a algun paciente? Si/No\n: ");
+        limpiar_buffer_STDIN();
+        fgets( respuesta, sizeof(respuesta), stdin );
+
+        convertir_cadena_a_minuscula( respuesta );
+
+        if ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) )
+
+            validar_errores_por_SO();
+
+    } while ( strlen( respuesta ) == 0 || ( strcmp( respuesta, "si" ) != 0 && strcmp( respuesta, "no" ) != 0) );
+
+    if ( strcmp( respuesta, "si") == 0 )
+    {
+        a_data->pacientes = fopen( a_data->ruta_archivo_pacientes, "r" );
+
+        if (a_data->pacientes == NULL)
+
+            fprintf(stderr, "ERROR DE LECTURA DE FICHEROS. . .\n");
+
+        else
+        {
+            do
+            {
+                do
+                {
+                    limpiar_terminal();
+
+                    printf("Digita el # de registro del paciente a dar de baja: ");
+                    limpiar_buffer_STDIN();
+                } while ( scanf( "%d", &numero_registro ) != 1 );
+
+                if ( numero_registro < 1 )
+
+                    validar_errores_por_SO();
+
+            } while ( numero_registro < 1 );
+
+            if ( !buscar_numero_nombre(a_data->pacientes, &a_data->datos, &numero_registro, NULL, &buscar) )
+            {
+                a_data->temporal = fopen( a_data->ruta_archivo_temporal, "w" );
+
+                if ( a_data->temporal == NULL )
+
+                    fprintf(stderr, "ERROR DE FICHEROS, INTENTE MAS TARDE. . .\n");
+
+                else
+                {
+                    rewind( a_data->pacientes );
+
+                    while (fscanf(a_data->pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d\n", a_data->datos.tipo_servicio, &a_data->datos.numero_registro, a_data->datos.nombre, &a_data->datos.edad, &a_data->datos.genero, a_data->datos.sintomas, &a_data->datos.numero_consultorio, a_data->datos.direccion, &a_data->datos.es_bebe) != EOF)
+                    {
+                        if ( ftell( a_data->temporal ) != 0  )
+                        {
+                            fprintf( a_data->temporal, "\n" );
+                            fflush( a_data->temporal );
+                        }
+
+                        if ( a_data->datos.numero_registro != numero_registro )
+                        {
+                            fprintf( a_data->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", a_data->datos.tipo_servicio, a_data->datos.numero_registro, a_data->datos.nombre, a_data->datos.edad, a_data->datos.genero, a_data->datos.sintomas, a_data->datos.numero_consultorio, a_data->datos.direccion, a_data->datos.es_bebe);
+                            fflush( a_data->temporal );
+                        }
+                    }
+
+                    remove( a_data->ruta_archivo_pacientes );
+                    rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
+
+                    fclose( a_data->temporal );
+
+                    limpiar_terminal();
+                    puts("  EL PACIENTE HA SIDO DADO DE BAJA! ");
+                }
+            }
+            else
+            {
+                limpiar_terminal();
+
+                puts("No se encontró al paciente en nuestro sistema. . .");
+            }
+        }
+    }
+}
+
 bool buscar_numero_nombre(FILE *f_pacientes, struct Datos_Pacientes *data, const int *numero_ingresado, const char *nombre_ingresado, const int *buscar)
 {
 
@@ -1392,7 +1550,7 @@ bool buscar_numero_nombre(FILE *f_pacientes, struct Datos_Pacientes *data, const
 
         }
     }
-    else if ( *buscar == 2 ) // Funcion editar_buscar (id)
+    else if ( *buscar == 2 ) // Funcion editar_buscar (id) - Baja Pacientes
         {
             while ( fscanf(f_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
             {
@@ -1427,8 +1585,6 @@ void convertir_cadena_a_minuscula(char *caracter)
 
         caracter++;
     }
-    
-
 }
 
 // Limpia buffer STDIN tanto para sistemas Windows como para UNIX/Linux
