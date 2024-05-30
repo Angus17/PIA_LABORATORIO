@@ -654,6 +654,10 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                             } while ( strlen( respuesta_2 ) == 0 || ( strcmp( respuesta_2, "si" ) != 0 && strcmp( respuesta_2, "no" ) != 0) );
                         }
 
+                        fclose( a_data->pacientes );
+
+                        remove( a_data->ruta_archivo_pacientes );
+                        rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
                     }
                     else
                     {
@@ -760,7 +764,13 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                                     validar_errores_por_SO();
 
                             } while ( strlen( respuesta_2 ) == 0 || ( strcmp( respuesta_2, "si" ) != 0 && strcmp( respuesta_2, "no" ) != 0) );
+
                         }
+
+                        fclose( a_data->pacientes );
+
+                        remove( a_data->ruta_archivo_pacientes );
+                        rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
 
                     }
                     else
@@ -773,8 +783,8 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                 break;
             }
 
-            fclose( a_data->pacientes );
-
+            limpiar_terminal();
+            puts(" EDICIÓN REALIZADA CORRECTAMENTE! ");
         }
     }
 }
@@ -1213,7 +1223,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
 
                         if ( strcmp( name, all->datos.nombre ) == 0 )
                         {
-                            fprintf( all->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", all->datos.tipo_servicio, all->datos.numero_registro, all->datos.nombre, all->datos.edad, auxiliar_genero, all->datos.sintomas, all->datos.numero_consultorio, auxiliar_direccion, all->datos.es_bebe);
+                            fprintf( all->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", all->datos.tipo_servicio, all->datos.numero_registro, all->datos.nombre, all->datos.edad, auxiliar_genero, all->datos.sintomas, all->datos.numero_consultorio, all->datos.direccion, all->datos.es_bebe);
                             fflush(all->temporal);
                         }
                         else
@@ -1287,7 +1297,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
 
                         if ( strcmp( name, all->datos.nombre ) == 0 )
                         {
-                            fprintf( all->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", all->datos.tipo_servicio, all->datos.numero_registro, all->datos.nombre, all->datos.edad, all->datos.genero, all->datos.sintomas, auxiliar_consultorio, auxiliar_direccion, all->datos.es_bebe);
+                            fprintf( all->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", all->datos.tipo_servicio, all->datos.numero_registro, all->datos.nombre, all->datos.edad, all->datos.genero, all->datos.sintomas, auxiliar_consultorio, all->datos.direccion, all->datos.es_bebe);
                             fflush(all->temporal);
                         }
                         else
@@ -1369,7 +1379,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
 
                         if ( strcmp( name, all->datos.nombre ) == 0 )
                         {
-                            fprintf( all->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", auxiliar_tipo_servicio, all->datos.numero_registro, all->datos.nombre, all->datos.edad, all->datos.genero, all->datos.sintomas, all->datos.numero_consultorio, auxiliar_direccion, all->datos.es_bebe);
+                            fprintf( all->temporal, "%-s %-d %-s %-d %-c %-s %-d %-s %-d", auxiliar_tipo_servicio, all->datos.numero_registro, all->datos.nombre, all->datos.edad, all->datos.genero, all->datos.sintomas, all->datos.numero_consultorio, all->datos.direccion, all->datos.es_bebe);
                             fflush(all->temporal);
                         }
                         else
@@ -1386,14 +1396,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
             break;
         }
 
-        remove( all->ruta_archivo_pacientes );
-        rename( all->ruta_archivo_temporal, all->ruta_archivo_pacientes );
-
         fclose( all->temporal );
-
-        limpiar_terminal();
-        puts(" EDICIÓN REALIZADA CORRECTAMENTE! ");
-        pausar_terminal();
     }
 }
 
@@ -1506,10 +1509,12 @@ void baja_pacientes(struct Conjunto_Datos *a_data)
                         }
                     }
 
-                    remove( a_data->ruta_archivo_pacientes );
-                    rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
 
                     fclose( a_data->temporal );
+                    fclose( a_data->pacientes );
+
+                    remove( a_data->ruta_archivo_pacientes );
+                    rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
 
                     limpiar_terminal();
                     puts(" EL PACIENTE HA SIDO DADO DE BAJA! ");
@@ -1522,7 +1527,6 @@ void baja_pacientes(struct Conjunto_Datos *a_data)
                 puts("No se encontró al paciente en nuestro sistema. . .");
             }
 
-            fclose( a_data->pacientes );
         }
     }
 }
