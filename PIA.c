@@ -353,7 +353,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
                     } while ( scanf(" %d", &dias) != 1);
 
-                    if ( dias < 1)
+                    if ( dias < 1 || dias > 43800)
 
                         validar_errores_por_SO();
 
@@ -376,7 +376,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
                                 data->edad = 1; // 1 mes aproximado de nacid@
 
                         }
-                } while ( dias < 1 );
+                } while ( dias < 1 || dias > 43800); // 43800 dias = aproximado de 120 años
             }
 
             do
