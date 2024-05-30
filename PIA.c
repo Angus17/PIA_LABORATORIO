@@ -95,7 +95,7 @@ int main(void)
 
                 else
 
-                    puts("EL HOSPITAL ESTA LLENO!. . .");
+                    puts("EL HOSPITAL ESTÁ LLENO!. . .");
 
                 break;
 
@@ -293,7 +293,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
                 limpiar_terminal();
 
                 printf("Dirección del paciente\n"
-                        "NOTA!: Cambia los campos entre () ignorando todos los parentesis\n"
+                        "NOTA!: Cambia los campos entre () ignorando todos los paréntesis\n"
                         "(Calle) #(numero) (Colonia, Fracc...etc.), (Municipio), (Estado)\n: ");
                 limpiar_buffer_STDIN();
                 fgets( data->direccion, sizeof( data->direccion ) - 1, stdin );
@@ -511,7 +511,7 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
     {
         limpiar_terminal();
 
-        printf("Desea buscar datos de algun paciente? Si/No\n: ");
+        printf("Desea buscar datos de algún paciente? Si/No\n: ");
         limpiar_buffer_STDIN();
         fgets( respuesta, sizeof(respuesta), stdin );
 
@@ -537,7 +537,7 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
             {
                 limpiar_terminal();
 
-                printf("Desea buscar por\n a) Numero de registro\n b) Nombre\n?: ");
+                printf("Desea buscar por\n a) Número de registro\n b) Nombre\n?: ");
                 limpiar_buffer_STDIN();
                 scanf(" %c", &respuesta_busqueda);
 
@@ -572,7 +572,7 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                     if ( !buscar_numero_nombre( a_data->pacientes, &a_data->datos, &numero_registro, NULL, &buscar_id ) )
                     {
                         printf("%-15s%-20s%-10s%-25s%-10s%-30s%-50s%-15s\n",
-                            "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+                            "# REGISTRO", "TIPO SERVICIO", "GÉNERO", "NOMBRE", "EDAD", "SÍNTOMAS", "DOMICILIO", "# CONSULTORIO");
 
                         if (a_data->datos.es_bebe)
                         {
@@ -615,10 +615,10 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                                     puts("Selecciona el campo a editar");
                                     puts("1) Nombre");
-                                    puts("2) Direccion");
-                                    puts("3) Sintomas");
+                                    puts("2) DirecciÓn");
+                                    puts("3) SÍntomas");
                                     puts("4) Edad");
-                                    puts("5) Genero");
+                                    puts("5) Género");
                                     puts("6) # Consultorio");
                                     puts("7) Tipo de servicio");
                                     printf(": ");
@@ -681,7 +681,7 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                     if ( !buscar_numero_nombre( a_data->pacientes, &a_data->datos, NULL, nombre, &buscar_nombre ) )
                     {
                         printf("%-15s%-20s%-10s%-25s%-10s%-30s%-50s%-15s\n",
-                            "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+                            "# REGISTRO", "TIPO SERVICIO", "GÉNERO", "NOMBRE", "EDAD", "SÍNTOMAS", "DOMICILIO", "# CONSULTORIO");
 
                         if (a_data->datos.es_bebe)
                         {
@@ -723,10 +723,10 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                                     puts("Selecciona el campo a editar");
                                     puts("1) Nombre");
-                                    puts("2) Direccion");
-                                    puts("3) Sintomas");
+                                    puts("2) Dirección");
+                                    puts("3) Síntomas");
                                     puts("4) Edad");
-                                    puts("5) Genero");
+                                    puts("5) Género");
                                     puts("6) # Consultorio");
                                     puts("7) Tipo de servicio");
                                     printf(": ");
@@ -885,7 +885,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
                     limpiar_terminal();
 
                     printf("Dirección del paciente\n"
-                            "NOTA!: Cambia los campos entre () ignorando todos los parentesis\n"
+                            "NOTA!: Cambia los campos entre () ignorando todos los paréntesis\n"
                             "(Calle) #(numero) (Colonia, Fracc...etc.), (Municipio), (Estado)\n: ");
                     limpiar_buffer_STDIN();
                     fgets( auxiliar_direccion, sizeof( auxiliar_direccion ), stdin );
@@ -1390,7 +1390,7 @@ void realizar_edicion( struct Conjunto_Datos *all, const int *opcion_elegida, co
         fclose( all->temporal );
 
         limpiar_terminal();
-        puts(" EDICION REALIZADA CORRECTAMENTE! ");
+        puts(" EDICIÓN REALIZADA CORRECTAMENTE! ");
         pausar_terminal();
     }
 }
@@ -1408,7 +1408,7 @@ void listar_pacientes(FILE *file_pacientes, struct Datos_Pacientes *data, const 
         rewind( file_pacientes );
 
         printf("%-15s%-20s%-10s%-25s%-10s%-30s%-50s%-15s\n\n",
-                "# REGISTRO", "TIPO SERVICIO", "GENERO", "NOMBRE", "EDAD", "SINTOMAS", "DOMICILIO", "# CONSULTORIO");
+                "# REGISTRO", "TIPO SERVICIO", "GŔNERO", "NOMBRE", "EDAD", "SÍNTOMAS", "DOMICILIO", "# CONSULTORIO");
 
         while ( fscanf(file_pacientes, "%15[^0-9] %d %100[^0-9] %d %c %50[^0-9] %d %200[^0-1] %d", data->tipo_servicio, &data->numero_registro, data->nombre, &data->edad, &data->genero, data->sintomas, &data->numero_consultorio, data->direccion, &data->es_bebe) != EOF )
         {
@@ -1467,7 +1467,7 @@ void baja_pacientes(struct Conjunto_Datos *a_data)
                 {
                     limpiar_terminal();
 
-                    printf("Digita el # de registro del paciente a dar de baja: ");
+                    printf("Digíta el # de registro del paciente a dar de baja: ");
                     limpiar_buffer_STDIN();
                 } while ( scanf( "%d", &numero_registro ) != 1 );
 
@@ -1510,7 +1510,7 @@ void baja_pacientes(struct Conjunto_Datos *a_data)
                     fclose( a_data->temporal );
 
                     limpiar_terminal();
-                    puts("  EL PACIENTE HA SIDO DADO DE BAJA! ");
+                    puts(" EL PACIENTE HA SIDO DADO DE BAJA! ");
                 }
             }
             else
