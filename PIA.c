@@ -1590,7 +1590,7 @@ void limpiar_buffer_STDIN()
 {
     #if defined(_WIN32) || defined(_WIN64)
         rewind(stdin);
-    #elif __linux__
+    #elif defined(__linux__) || defined(unix) && !defined(__ANDROID__)
         __fpurge(stdin);
     #endif
 }
@@ -1600,7 +1600,7 @@ void limpiar_terminal()
 {
     #if defined(_WIN32) || defined(_WIN64)
         system("cls");
-    #elif __linux__
+    #elif defined(__linux__) || defined(unix) && !defined(__ANDROID__)
         system("clear");
     #endif
 }
@@ -1610,7 +1610,7 @@ void pausar_terminal()
 {
     #if defined(_WIN32) || defined(_WIN64)
         system("pause");
-    #elif __linux__
+    #elif defined(__linux__) || defined(unix) && !defined(__ANDROID__)
         printf("Presiona ENTER para continuar. . .");
         fflush(stdout);
         limpiar_buffer_STDIN();
