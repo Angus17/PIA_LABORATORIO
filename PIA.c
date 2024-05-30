@@ -326,7 +326,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
                 } while ( scanf( " %d", &data->edad ) != 1);
 
-                if ( data->edad < 0)
+                if ( data->edad < 0 || data->edad > 120)
 
                     validar_errores_por_SO();
 
@@ -338,7 +338,7 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 
                         data->es_bebe = 0; // false
 
-            } while ( data->edad < 0 );
+            } while ( data->edad < 0 || data->edad > 120 );
 
             if ( data->es_bebe )
             {
