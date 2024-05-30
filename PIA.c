@@ -1521,6 +1521,8 @@ void baja_pacientes(struct Conjunto_Datos *a_data)
 
                 puts("No se encontró al paciente en nuestro sistema. . .");
             }
+
+            fclose( a_data->pacientes );
         }
     }
 }
