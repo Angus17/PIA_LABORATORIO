@@ -368,9 +368,14 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
                             data->edad = dias / 365; // Edad aproximada en años
                         }
                         else
-
+                        {
                             data->edad = dias / 30; // Edad aproximada en meses
 
+                            if (data->edad == 0)
+
+                                data->edad = 1; // 1 mes aproximado de nacid@
+
+                        }
                 } while ( dias < 1 );
             }
 
