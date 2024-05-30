@@ -126,9 +126,14 @@ int main(void)
             case 4:
 
                 if ( todo.total_pacientes > 0 )
-
+                {
                     baja_pacientes( &todo );
 
+                    if ( todo.total_pacientes == 0 )
+
+                        remove(todo.ruta_archivo_pacientes);
+
+                }
                 else
 
                     puts("NO HAY PACIENTES REGISTRADOS EN EL SISTEMA!. . .");
@@ -658,6 +663,9 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                         remove( a_data->ruta_archivo_pacientes );
                         rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
+
+                        limpiar_terminal();
+                        puts(" EDICIÓN REALIZADA CORRECTAMENTE! ");
                     }
                     else
                     {
@@ -772,6 +780,8 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                         remove( a_data->ruta_archivo_pacientes );
                         rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
 
+                        limpiar_terminal();
+                        puts(" EDICIÓN REALIZADA CORRECTAMENTE! ");
                     }
                     else
                     {
@@ -783,8 +793,6 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
                 break;
             }
 
-            limpiar_terminal();
-            puts(" EDICIÓN REALIZADA CORRECTAMENTE! ");
         }
     }
 }
@@ -1515,6 +1523,8 @@ void baja_pacientes(struct Conjunto_Datos *a_data)
 
                     remove( a_data->ruta_archivo_pacientes );
                     rename( a_data->ruta_archivo_temporal, a_data->ruta_archivo_pacientes );
+
+                    a_data->total_pacientes--;
 
                     limpiar_terminal();
                     puts(" EL PACIENTE HA SIDO DADO DE BAJA! ");
