@@ -213,9 +213,9 @@ void alta_pacientes( FILE *file_pacientes, struct Datos_Pacientes *data, int *pa
 {
     char respuesta[3];
     char expresion[] = "^(externo|emergencia)$";
-    char expresion_2[] = "^[A-Za-z ]+$";
-    char expresion_3[] = "^([0-9A-Za-z ]+) #([0-9]+) ([A-Za-z ]+)\\, ([A-Za-z ]+)\\, ([A-Za-z ]+)$";
-    char expresion_4[] = "^[A-Za-z, ]+$";
+    char expresion_2[] = "^[A-Za-zÁ-Ý\u00f1\u00d1 ]+$";
+    char expresion_3[] = "^([0-9A-Za-zÁ-Ý\u00f1\u00d1 ]+) #([0-9]+) ([A-Za-zÁ-Ý\u00f1\u00d1 ]+)\\, ([A-Za-zÁ-Ý\u00f1\u00d1 ]+)\\, ([A-Za-zÁ-Ý\u00f1\u00d1 ]+)$";
+    char expresion_4[] = "^[A-Za-z,Á-Ý\u00f1\u00d1 ]+$";
     regex_t re_servicio, re_cadenas, re_direccion, re_sintomas;
     bool numero_disponible = true;
     int regular_1, dias, busqueda_id = 1;
@@ -517,7 +517,9 @@ void contar_pacientes(FILE *file_pacientes, struct Datos_Pacientes *data, int *p
 void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 {
     char respuesta[3], respuesta_2[3], respuesta_busqueda, nombre[100];
-    int numero_registro, buscar_id = 2, buscar_nombre = 3, opcion;
+    int numero_registro, buscar_id = 2, buscar_nombre = 3, opcion, regex_1;
+    char expresion_2[] = "^([A-Za-zÁ-Ý\u00f1\u00d1 ]+)$";
+    regex_t re_cadenas;
 
     do
     {
@@ -537,6 +539,8 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
     if (strcmp( respuesta, "si" ) == 0)
     {
+        regcomp( &re_cadenas, expresion_2, REG_EXTENDED );
+
         a_data->pacientes = fopen( a_data->ruta_archivo_pacientes, "r" );
 
         if ( a_data->pacientes == NULL )
@@ -693,7 +697,13 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                         *( nombre + ( strcspn( nombre, "\n" ) ) ) = '\0';
 
-                    } while (numero_registro < 1);
+                        regex_1 = regexec( &re_cadenas, nombre, 0, NULL, 0 );
+
+                        if ( regex_1 != 0 )
+
+                            validar_errores_por_SO();
+
+                    } while (regex_1 != 0);
 
                     strcat( nombre, " " );
 
@@ -797,6 +807,8 @@ void buscar_editar_paciente(struct Conjunto_Datos *a_data)
 
                 break;
             }
+
+            regfree( &re_cadenas );
 
         }
     }
